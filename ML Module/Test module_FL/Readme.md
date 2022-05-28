@@ -9,3 +9,5 @@ The test module trains provides an understanding of how to utilize tensorflow fo
 
 <b>Note </b>
 Although the tutorial runs the client and server on one python script - simulating the client and server together which does not make use of distributed learning. We can implement flask on top of this current architecture. 
+
+I didn't manage to run this as the dataset extraction was about 7hrs - most importantly was how the client weights were aggregated on the server.

@@ -7,6 +7,7 @@ import numpy
 Temporary code for generating Chess dataset - will be deleted when we get the data directly from the clients
 - Code generates chess boards
 - Chessboards are converted to 14 X 8 X 8
+- Refer to https://medium.com/@nihalpuram/training-a-chess-ai-using-tensorflow-e795e1377af2 for more information
 """
 
 def create_client_dataset():
@@ -57,7 +58,6 @@ def stockfish(board, depth):
     result = sf.analyse(board, chess.engine.Limit(depth=depth))
     score = result['score'].white().score()
     return score
-
 
 squares_index = {
     'a': 0,
