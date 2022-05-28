@@ -1,3 +1,4 @@
+import threading
 import chess
 import random
 import chess.engine
@@ -110,12 +111,7 @@ def create_client_dataset():
 def client_model_training():
     # model = build_model(32, 4)
     x_train, y_train = create_client_dataset()
-
     x_train.transpose()
-    print(x_train.shape)
-    print(y_train.shape)
-    # model.compile(optimizer=optimizers.Adam(5e-4), loss='mean_squared_error')
-    # model.summary()
     checkpoint_filepath = '/tmp/checkpoint/'
     model_checkpointing_callback = ModelCheckpoint(
         filepath=checkpoint_filepath,
@@ -129,7 +125,7 @@ def client_model_training():
             validation_split=0.1,
             callbacks=[callbacks.ReduceLROnPlateau(monitor='loss', patience=10),
                         callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4), model_checkpointing_callback])
-
+    new_model.save_weights("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/client_weights/client_weights", save_format="h5")
 
 # make a GET request
 def request_global_model_data():
@@ -146,13 +142,33 @@ def request_global_model_data():
 # make a POST request
 def send_client_model_data():
     file = open("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/client_weights/Weights", "rb")
-    res = requests.post('http://localhost:5000/tests/endpoint', file)
+    params = {'client': '1', 'datasize':'100'}
+    res = requests.post('http://localhost:5000/tests/endpoint', file, params=params)
     print('response from server:', res.text)
 
-if __name__ == '__main__':
-    # get_client_dataset()
-    # request_global_model_data()
-    # client_model_training()
+
+@app.route('/tests/endpoint1', methods=['POST'])
+def my_test_endpoint():
+
+    print("Recieved Global weights")
+    if request.method == 'POST':  # Client is sending model data
+
+        filename = "C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/client_weights/global_weights"
+        with open(filename, "wb") as f:
+            f.write(request.data)
+        f.close()
+        # To implement concurrency
+        return jsonify("Recieved")
+
+
+def intialize():
+    request_global_model_data()
+    client_model_training()
     send_client_model_data()
-    # app.run(port=5001, debug=True)
+
+
+if __name__ == '__main__':
+    intialize_thread = threading.Thread(target=intialize)
+    intialize_thread.start()
+    app.run(port=5001, debug=False)
 
