@@ -10,16 +10,18 @@ from libs.chess_utils import *
 
 app = Flask(__name__)
 
+FILEPATH = os.path.abspath("ML Module/Actual FL_module/Client/")
+
 """ 
 request_global_model()
     Request global model from the server using python Request
 """
 def request_global_model():
-    print('Requesting Global Model from Server/n')
+    print('Requesting Global Model from Server\n')
     res = requests.get('http://localhost:5000/server/send_global_weights',
                        json="Requesting Global model Data")
-    print('received Global Model from Server/n')
-    with open("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Client/global_model", "wb") as f:
+    print('Received Global Model from Server\n')
+    with open(FILEPATH + "\\global_model", "wb") as f:
         f.write(res.content)
     f.close()
     print('Global Model saved')
@@ -39,7 +41,7 @@ def client_model_training(dataset):
     )
 
     print("Initiated Model training/n")
-    chess_model = tensorflow.keras.models.load_model("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Client/global_model")
+    chess_model = tensorflow.keras.models.load_model(FILEPATH + "\\global_model")
     chess_model.fit(x_train, y_train,
             batch_size=2048,
             epochs=5,
@@ -47,7 +49,7 @@ def client_model_training(dataset):
             validation_split=0.1,
             callbacks=[callbacks.ReduceLROnPlateau(monitor='loss', patience=10),
                         callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4), model_checkpointing_callback])
-    chess_model.save_weights("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Client/client_weights", save_format="h5")
+    chess_model.save_weights(FILEPATH + "\\client_weights", save_format="h5")
     print("Completed Model training/n")
 
 """
@@ -55,7 +57,7 @@ send_client_weights()
     Send client weights to the server 
 """
 def send_client_weights():
-    file = open("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Client/client_weights", "rb")
+    file = open(FILEPATH + "\\client_weights", "rb")
     params = {'client': '1', 'datasize':'100'}
     res = requests.post('http://localhost:5000/server/receive_client_weights', file, params=params)
     print('Response from server: ', res.text)
@@ -67,13 +69,13 @@ receive_global_weights()
 """
 @app.route('/client/receive_global_weights', methods=['POST'])
 def receive_global_weights():
-    print("received Global weights")
+    print("Received updated Global weights")
     if request.method == 'POST':
-        filename = "C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Client/global_weights"
+        filename = FILEPATH + "\\global_weights"
         with open(filename, "wb") as f:
             f.write(request.data)
         f.close()
-        return jsonify("received updated server weights")
+        return jsonify("Received updated server weights")
 
 """
 Initialize():

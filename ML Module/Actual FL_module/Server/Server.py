@@ -1,3 +1,4 @@
+import os
 import threading
 from flask import Flask, request, jsonify, send_file
 import requests
@@ -5,10 +6,13 @@ import numpy
 import tensorflow
 app = Flask(__name__)
 
+FILEPATH = os.path.abspath("ML Module/Actual FL_module/Server/")
+
 # Global Variable for Model Aggregation
 client_weights_filepath_list = []   # Contains Array of Client Weights filepath
 global_dataset_size = 0             # Contains Sum of client dataset size
 client_dataset_size_list = []       # Contains Array of client dataset size
+
 
 """
 send_global_weights():
@@ -18,8 +22,10 @@ send_global_weights():
 def send_global_weights():
     if request.method == 'GET':  # Client has just initialzed and is requesting model data
         print("Sending Global Weights")
-        # return send_file("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Test module_Chess_AI/modelversion3.h5", attachment_filename='weights')
-        return send_file("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Server/global_model.h5", attachment_filename='weights')
+        filepath = FILEPATH + "\\global_model.h5"
+        print(filepath)
+        # return send_file("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Server/global_model.h5")
+        return send_file(filepath)
 
 """
 receive_client_weights():
@@ -36,7 +42,7 @@ def receive_client_weights():
         # Save weights into a file
         client_id = request.args.get("client")
         client_dataset_size = request.args.get("datasize")
-        filename = "C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Server/client_weight{}".format(client_id)
+        filename = FILEPATH + "\\client_weight{}".format(client_id)
         with open(filename, "wb") as f:
             f.write(request.data)
         f.close()
@@ -58,8 +64,7 @@ aggregation():
 """
 def aggregation():
     # Model initialization
-    model = tensorflow.keras.models.load_model(
-        "C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Server/global_model.h5")
+    model = tensorflow.keras.models.load_model(FILEPATH + "\\global_model.h5")
 
     # Model Aggregation
     print("Aggregating client weights")
@@ -126,15 +131,15 @@ def sum_scaled_weights(scaled_client_weights, model):
         global_weight = numpy.add(global_weight, client_weight)
     model.set_weights(global_weight)
     model.save_weights(
-        "C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Server/Updated_global_weights", save_format="h5")
+        FILEPATH + "\\Updated_global_weights", save_format="h5")
 
 
 def send_client_updated_weights():
     print("Sending updated global weights")
-    file = open("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/Server/Updated_global_weights", "rb")
+    file = open(FILEPATH + "\\Updated_global_weights", "rb")
     res = requests.post(
         'http://localhost:5001/client/receive_global_weights', file)
-
+    print(res.text)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=False)
