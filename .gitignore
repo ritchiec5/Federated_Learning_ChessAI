@@ -1,2 +1,7 @@
 
 ML Module/Test module_Chess_AI/dataset.npz
+*.pyc
+ML Module/Actual FL_module/Server/client_weight1
+ML Module/Actual FL_module/Client/global_weights
+ML Module/Actual FL_module/Client/client_weights
+ML Module/Actual FL_module/Client/global_model
