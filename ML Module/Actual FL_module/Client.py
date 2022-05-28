@@ -9,6 +9,10 @@ import tensorflow.keras.layers as layers
 import tensorflow.keras.utils as utils
 import tensorflow.keras.optimizers as optimizers
 import numpy
+from flask import Flask, request, jsonify, send_file
+import tensorflow
+app = Flask(__name__)
+
 
 squares_index = {
     'a': 0,
@@ -20,20 +24,6 @@ squares_index = {
     'g': 6,
     'h': 7
 }
-
-def build_model(conv_size, conv_depth):
-  board3d = layers.Input(shape=(14, 8, 8))
-
-  # adding the convolutional layers
-  x = board3d
-  for _ in range(conv_depth):
-    x = layers.Conv2D(filters=conv_size, kernel_size=3,
-                      padding='same', activation='relu')(x)
-  x = layers.Flatten()(x)
-  x = layers.Dense(64, 'relu')(x)
-  x = layers.Dense(1, 'sigmoid')(x)
-
-  return models.Model(inputs=board3d, outputs=x)
 
 # example: h3 -> 17
 def square_to_index(square):
@@ -118,21 +108,21 @@ def create_client_dataset():
 
 
 def client_model_training():
-    model = build_model(32, 4)
+    # model = build_model(32, 4)
     x_train, y_train = create_client_dataset()
 
     x_train.transpose()
     print(x_train.shape)
     print(y_train.shape)
-    model.compile(optimizer=optimizers.Adam(5e-4), loss='mean_squared_error')
-    model.summary()
+    # model.compile(optimizer=optimizers.Adam(5e-4), loss='mean_squared_error')
+    # model.summary()
     checkpoint_filepath = '/tmp/checkpoint/'
     model_checkpointing_callback = ModelCheckpoint(
         filepath=checkpoint_filepath,
         save_best_only=True,
     )
-    model.load_weights("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Test module_Chess_AI/test_weight/global_weight")
-    model.fit(x_train, y_train,
+    new_model = tensorflow.keras.models.load_model("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/global_model/global_model")
+    new_model.fit(x_train, y_train,
             batch_size=2048,
             epochs=20,
             verbose=1,
@@ -141,30 +131,28 @@ def client_model_training():
                         callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4), model_checkpointing_callback])
 
 
-# make a POST request
+# make a GET request
 def request_global_model_data():
     res = requests.get('http://localhost:5000/tests/endpoint',
                        json="Requesting Global model Data")
     print('Requesting Client model Data')
     print(res.content)
     print('response from server:', res.content)
-    with open("global_weight", "wb") as f:
+    with open("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/global_model/global_model", "wb") as f:
         f.write(res.content)
     f.close()
 
 
-# make a GET request
+# make a POST request
 def send_client_model_data():
-    res = requests.post('http://localhost:5000/tests/endpoint',
-                        json="Sending Client model Data")
-    # print('Sending Client model Data')
+    file = open("C:/Users/Ritchie Chan/Desktop/3004/Federated_Learning_ChessAI/ML Module/Actual FL_module/client_weights/Weights", "rb")
+    res = requests.post('http://localhost:5000/tests/endpoint', file)
     print('response from server:', res.text)
-
 
 if __name__ == '__main__':
     # get_client_dataset()
-    weights = request_global_model_data()
-    print(weights)
-    client_model_training()
+    # request_global_model_data()
+    # client_model_training()
     send_client_model_data()
+    # app.run(port=5001, debug=True)
 
