@@ -138,7 +138,7 @@ def send_client_updated_weights():
     print("Sending updated global weights")
     file = open(FILEPATH + "\\Updated_global_weights", "rb")
     res = requests.post(
-        'http://localhost:5001/client/receive_global_weights', file)
+        'http://localhost:5001/client/receive_global_ weights', file)
     print(res.text)
 
 if __name__ == '__main__':
