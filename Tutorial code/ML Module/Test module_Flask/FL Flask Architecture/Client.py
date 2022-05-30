@@ -1,4 +1,3 @@
-#handle a POST request
 import requests
 
 

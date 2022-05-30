@@ -2,6 +2,7 @@ import chess
 import chess.engine
 import random
 import numpy
+import os
 
 """
 Temporary code for generating Chess dataset - will be deleted when we get the data directly from the clients
@@ -9,6 +10,7 @@ Temporary code for generating Chess dataset - will be deleted when we get the da
 - Chessboards are converted to 14 X 8 X 8
 - Refer to https://medium.com/@nihalpuram/training-a-chess-ai-using-tensorflow-e795e1377af2 for more information
 """
+FILEPATH = os.path.abspath("Completed Code/Client")
 
 def create_client_dataset():
     x_dataset = []
@@ -51,10 +53,9 @@ def random_board(max_depth=200):
   return board
 
 
-# this function will create our f(x) (score)
 def stockfish(board, depth):
-  with chess.engine.SimpleEngine.popen_uci(
-          r'C:\Users\Ritchie Chan\Desktop\3004\Federated_Learning_ChessAI\ML Module\Test module_Chess_AI\stockfish_15_win_x64_avx2\stockfish_15_win_x64_avx2\stockfish_15_x64_avx2.exe') as sf:
+  filepath = FILEPATH + "\\libs\\stockfish_15_win_x64_avx2\\stockfish_15_win_x64_avx2\\stockfish_15_x64_avx2.exe"
+  with chess.engine.SimpleEngine.popen_uci(filepath) as sf:
     result = sf.analyse(board, chess.engine.Limit(depth=depth))
     score = result['score'].white().score()
     return score

@@ -1,4 +1,3 @@
-#handle a POST request
 from flask import Flask, render_template, request, url_for, jsonify
 app = Flask(__name__)
 

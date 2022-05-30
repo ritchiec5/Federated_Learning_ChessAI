@@ -46,3 +46,25 @@ To evaluate the performance of the AI - we will have the AI play against a chess
 1. Train centralized AI model - quite simple
 2. Implement AI vs AI: To allow the central AI to compete against the FL AI
     - The score of the 10 matches will be kept for evaluation
+
+
+## Code Deployment
+
+### Installing Requirements
+```pip install -r requirements.txt```
+
+### Running Code
+Run Server.py followed by Client.py in the complete code
+- Don't cd into completed code or any other folder. The code is configured to run from Federated_Learning_ChessAI directory.
+
+## How to go about the code
+
+### Understanding FL & ML portion
+1. Go through Tutorial code in ML Module (<b>Rmb to read the readme.md</b>)
+- Test module_Chess_AI is a good place to start to understand how to train your own Chess_AI
+- Test module_FL shows how to implement a FL code for classification model
+- Test module_Flask show the general flask architecture for FL
+- Actual FL_module combines all three test modules together
+
+2. Go through Tutorial code in Web Interface
+- Test module_Chess_board provides a good understanding of implementing chessboard on flask and implementing the chess AI (<b>optional</b> - can skip directly to the completed code to see web interface)

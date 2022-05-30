@@ -1,4 +1,3 @@
-#make a POST request
 import requests
 dictToSend = {'question': 'what is the answer?'}
 res = requests.post('http://localhost:5000/tests/endpoint', json=dictToSend)

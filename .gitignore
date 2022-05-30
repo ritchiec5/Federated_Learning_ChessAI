@@ -6,3 +6,5 @@ ML Module/Actual FL_module/Client/global_weights
 ML Module/Actual FL_module/Client/client_weights
 ML Module/Actual FL_module/Client/global_model
 ML Module/Actual FL_module/Server/updated_global_weights
+*.npz
+Tutorial code/ML Module/Test module_Chess_AI/test_weight/global_weight

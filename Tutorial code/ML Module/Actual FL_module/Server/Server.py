@@ -6,7 +6,7 @@ import numpy
 import tensorflow
 app = Flask(__name__)
 
-FILEPATH = os.path.abspath("ML Module/Actual FL_module/Server/")
+FILEPATH = os.path.abspath("Tutorial code/ML Module/Actual FL_module/Server/")
 
 # Global Variable for Model Aggregation
 client_weights_filepath_list = []   # Contains Array of Client Weights filepath
@@ -138,7 +138,7 @@ def send_client_updated_weights():
     print("Sending updated global weights")
     file = open(FILEPATH + "\\Updated_global_weights", "rb")
     res = requests.post(
-        'http://localhost:5001/client/receive_global_ weights', file)
+        'http://localhost:5001/client/receive_global_weights', file)
     print(res.text)
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ from libs.chess_utils import *
 
 app = Flask(__name__)
 
-FILEPATH = os.path.abspath("ML Module\Actual FL_module\Client\Client.py")
+FILEPATH = os.path.abspath("Tutorial code\ML Module\Actual FL_module\Client")
 
 """ 
 request_global_model()
