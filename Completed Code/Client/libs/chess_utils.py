@@ -4,48 +4,48 @@ import random
 import numpy
 import os
 
-FILEPATH = os.path.abspath("Completed Code/FlaskChess")
+FILEPATH = os.path.abspath("Completed Code/Client")
+
+
+def save_board(chess_position):
+  filepath = FILEPATH + "/client_dataset/" + "dataset.txt"
+  if (os.path.exists(filepath)):
+    file = open(filepath, "a")
+    file.write(chess_position + "\n")
+
+  else:
+    file = open(filepath, "w")
+    file.write(chess_position + "\n")
+    file.close()
+
 
 def create_client_dataset():
-    x_dataset = []
-    y_dataset = []
+  x_dataset = []
+  y_dataset = []
 
-    print("Creating Dataset")
-    for i in range(10):
-        print("Dataset ", i, ": created")
-        board = random_board()
-        eval = stockfish(board, 1)
-        print("Stockfish: ", eval)
-        data_board = split_dims(board)
+  filepath = FILEPATH + "/client_dataset/" + "dataset.txt"
+  file = open(filepath,"r")
+  data = file.read()
+  data = data.splitlines()
 
-        if eval is None:
-            pass
-        else:
-            x_dataset.append(data_board)
-            y_dataset.append(eval)
+  print("Creating Dataset")
+  for chess_position in data:  
+    board = chess.Board(chess_position)
+    evaluation = stockfish(board, 1)
+    numpy_board = split_dims(board)
+    
+    if evaluation is None:
+      pass
+    else:
+      x_dataset.append(numpy_board)
+      y_dataset.append(evaluation)
 
-    x_dataset = numpy.asarray(x_dataset)
-    y_dataset = numpy.asarray(y_dataset)
-    y_dataset = numpy.asarray(
-        y_dataset / abs(y_dataset).max() / 2 + 0.5, dtype=numpy.float32)
-    print(y_dataset)
+  x_dataset = numpy.asarray(x_dataset)
+  y_dataset = numpy.asarray(y_dataset)
+  y_dataset = numpy.asarray(
+      y_dataset / abs(y_dataset).max() / 2 + 0.5, dtype=numpy.float32)
 
-    return x_dataset, y_dataset
-
-# this function will create our x (board)
-def random_board(max_depth=200):
-  board = chess.Board()
-  depth = random.randrange(0, max_depth)
-
-  for _ in range(depth):
-    all_moves = list(board.legal_moves)
-    random_move = random.choice(all_moves)
-    board.push(random_move)
-    if board.is_game_over():
-      break
-
-  return board
-
+  return x_dataset, y_dataset
 
 # this function will create our f(x) (score)
 def stockfish(board, depth):
@@ -65,7 +65,6 @@ squares_index = {
     'g': 6,
     'h': 7
 }
-
 
 # example: h3 -> 17
 def square_to_index(square):
@@ -102,23 +101,9 @@ def split_dims(board):
   return board3d
 
 
-def save_board(chess_position):
 
-  filepath = FILEPATH + "/client_dataset/" + "dataset.txt"
 
-  if (os.path.exists(filepath)):
-    file = open(filepath, "a")
-    file.write(chess_position + "\n")
 
-  else: 
-    file = open(filepath, "w")
-    file.write(chess_position + "\n")
-    file.close()
-
-  # file = open(filepath,"r")
-  # data = file.read()
-  # data = data.splitlines()
-  # print(data)
 
 # for x in range(6):
 #   save_board("r1b1kb1r/ppp1pppp/2nq1n2/1K1p4/8/8/PPPP1PPP/RNBQ1BNR b kq - 5 7")

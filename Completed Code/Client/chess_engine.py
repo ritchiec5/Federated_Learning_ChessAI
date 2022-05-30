@@ -10,7 +10,6 @@ def minimax_eval(board, model):
 
 
 def minimax(board, depth, alpha, beta, maximizing_player, model):
-  print("Calculating")
   if depth == 0 or board.is_game_over():
     return minimax_eval(board, model)
 

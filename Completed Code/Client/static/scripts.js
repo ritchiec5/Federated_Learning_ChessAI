@@ -1,3 +1,4 @@
+let game_over = true
 var board,
   game = new Chess(),
   statusEl = $('#status'),
@@ -51,13 +52,17 @@ var updateStatus = function() {
   }
 
   // checkmate?
-  if (game.in_checkmate() === true) {
+  if (game.in_checkmate() === true && game_over === true) {
     status = 'Game over, ' + moveColor + ' is in checkmate.';
+    gameover();
+    game_over = false
   }
 
   // draw?
-  else if (game.in_draw() === true) {
+  else if (game.in_draw() === true && game_over === true) {
     status = 'Game over, drawn position';
+    gameover();
+    game_over = false
   }
 
   // game still on
@@ -88,13 +93,8 @@ var cfg = {
   onSnapEnd: onSnapEnd
 };
 
-var randomResponse = function() {
-    fen = game.fen()
-    $.get($SCRIPT_ROOT + "/move/" + fen, function(data) {
-        game.move(data, {sloppy: true});
-        // board.position(game.fen());
-        updateStatus();
-    })
+var gameover = function() {
+  $.post($SCRIPT_ROOT + "/gameover/", function(){})
 }
 
 var getResponseMove = function() {
@@ -109,10 +109,6 @@ var getResponseMove = function() {
         setTimeout(function(){ board.position(game.fen()); }, 100);
     })
 }
-
-
-
-
 
 var setPGN = function() {
   var table = document.getElementById("pgn");
@@ -177,6 +173,7 @@ var newGame = function() {
     game.reset();
     board.start();
     updateStatus();
+    game_over = true;
 }
 
 var getCapturedPieces = function() {
