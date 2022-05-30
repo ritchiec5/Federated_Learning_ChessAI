@@ -19,7 +19,8 @@ def get_move_from_ai(board, depth, model):
   max_move = None
   max_eval = -numpy.inf
 
-  # 
+  # Move based on the legal move and evaluate
+  # Keeps the best evaluation
   for move in board.legal_moves:
     board.push(move)
     eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
@@ -30,12 +31,19 @@ def get_move_from_ai(board, depth, model):
 
   return str(max_move)
 
-# used for the minimax algorithm
-def minimax_eval(board, model):
-  board3d = split_dims(board)
-  board3d = numpy.expand_dims(board3d, 0)
-  return model(board3d)[0][0]
 
+"""
+minimax():
+  algorithm to determine the min max of the additional depth >1
+  
+Parameter:
+  board: Chess board by chess lib
+  depth: How many moves ahead to evaluate
+  alpha: determine the minimum evaluation
+  beta: determine the maximum evaluation
+  maximizing_player: find the best move that optimizes the player
+  model: tensorflow model
+"""
 def minimax(board, depth, alpha, beta, maximizing_player, model):
   if depth == 0 or board.is_game_over():
     return minimax_eval(board, model)
@@ -63,4 +71,14 @@ def minimax(board, depth, alpha, beta, maximizing_player, model):
         break
     return min_eval
 
+"""
+minimax_eval():
+  predict the board evaluation score through the AI
 
+return:
+  int: model prediction score
+"""
+def minimax_eval(board, model):
+  board3d = split_dims(board)
+  board3d = numpy.expand_dims(board3d, 0)
+  return model(board3d)[0][0]
