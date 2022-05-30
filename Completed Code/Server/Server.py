@@ -21,7 +21,7 @@ send_global_weights():
 def send_global_weights():
     if request.method == 'GET':  # Client has just initialzed and is requesting model data
         print("Sending Global Weights")
-        filepath = FILEPATH + "\\global_model.h5"
+        filepath = FILEPATH + "\\model_data\\global_model.h5"
         print(filepath)
         return send_file(filepath)
 
@@ -40,7 +40,7 @@ def receive_client_weights():
         # Save weights into a file
         client_id = request.args.get("client")
         client_dataset_size = request.args.get("datasize")
-        filename = FILEPATH + "\\client_weight{}".format(client_id)
+        filename = FILEPATH + "\\model_data\\client_weight{}".format(client_id)
         with open(filename, "wb") as f:
             f.write(request.data)
         f.close()
@@ -62,7 +62,7 @@ aggregation():
 """
 def aggregation():
     # Model initialization
-    model = tensorflow.keras.models.load_model(FILEPATH + "\\global_model.h5")
+    model = tensorflow.keras.models.load_model(FILEPATH + "\\model_data\\global_model.h5")
 
     # Model Aggregation
     print("Aggregating client weights")
@@ -129,7 +129,7 @@ def sum_scaled_weights(scaled_client_weights, model):
         global_weight = numpy.add(global_weight, client_weight)
     model.set_weights(global_weight)
     model.save_weights(
-        FILEPATH + "\\Updated_global_weights", save_format="h5")
+        FILEPATH + "\\model_data\\Updated_global_weights", save_format="h5")
 
 """
 send_client_updated_weights()
@@ -137,7 +137,7 @@ send_client_updated_weights()
 """
 def send_client_updated_weights():
     print("Sending updated global weights")
-    file = open(FILEPATH + "\\Updated_global_weights", "rb")
+    file = open(FILEPATH + "\\model_data\\Updated_global_weights", "rb")
     res = requests.post(
         'http://localhost:5001/client/receive_global_weights', file)
     print(res.text)

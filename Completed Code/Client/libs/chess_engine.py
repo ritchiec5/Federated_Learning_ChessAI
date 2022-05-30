@@ -1,13 +1,40 @@
 from tensorflow.keras import models
-from libs.chess_utils import * 
+import numpy
+from libs.chess_ML_utils import * 
 
+
+"""
+get_move_from_ai:
+  Gets the most optimal the AI has predicted
+
+parameters:
+  board: Chess board by chess lib
+  depth: How many moves ahead to evaluate
+  model: tensorflow model
+
+return:
+  str(max_move): string of the best move
+"""
+def get_move_from_ai(board, depth, model):
+  max_move = None
+  max_eval = -numpy.inf
+
+  # 
+  for move in board.legal_moves:
+    board.push(move)
+    eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
+    board.pop()
+    if eval > max_eval:
+      max_eval = eval
+      max_move = move
+
+  return str(max_move)
 
 # used for the minimax algorithm
 def minimax_eval(board, model):
   board3d = split_dims(board)
   board3d = numpy.expand_dims(board3d, 0)
   return model(board3d)[0][0]
-
 
 def minimax(board, depth, alpha, beta, maximizing_player, model):
   if depth == 0 or board.is_game_over():
@@ -37,17 +64,3 @@ def minimax(board, depth, alpha, beta, maximizing_player, model):
     return min_eval
 
 
-# this is the actual function that gets the move from the neural network
-def engine(board, depth, model):
-  max_move = None
-  max_eval = -numpy.inf
-
-  for move in board.legal_moves:
-    board.push(move)
-    eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
-    board.pop()
-    if eval > max_eval:
-      max_eval = eval
-      max_move = move
-
-  return str(max_move)
