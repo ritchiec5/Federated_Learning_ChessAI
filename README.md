@@ -68,3 +68,6 @@ Run Server.py followed by Client.py in the complete code
 
 2. Go through Tutorial code in Web Interface
 - Test module_Chess_board provides a good understanding of implementing chessboard on flask and implementing the chess AI (<b>optional</b> - can skip directly to the completed code to see web interface)
+
+3. Go through the completed code
+- Good job on finishing the tutorial code, now we can see how it all comes together in the completed code
