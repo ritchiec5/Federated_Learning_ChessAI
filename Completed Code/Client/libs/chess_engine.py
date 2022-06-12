@@ -16,8 +16,8 @@ return:
   str(max_move): string of the best move
 """
 def get_move_from_ai(board, depth, model):
-  max_move = None
-  max_eval = -numpy.inf
+  min_move = None
+  min_eval = numpy.inf
 
   # Move based on the legal move and evaluate
   # Keeps the best evaluation
@@ -25,11 +25,11 @@ def get_move_from_ai(board, depth, model):
     board.push(move)
     eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
     board.pop()
-    if eval > max_eval:
-      max_eval = eval
-      max_move = move
+    if eval < min_eval:
+      min_eval = eval
+      min_move = move
 
-  return str(max_move)
+  return str(min_move)
 
 
 """

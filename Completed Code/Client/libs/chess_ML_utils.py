@@ -17,6 +17,20 @@ import tensorflow.keras.callbacks as callbacks
 FILEPATH = os.path.abspath("Completed Code/Client")
 
 """
+dataset_size():
+  get dataset size
+"""
+def dataset_size():
+  line_count = 0
+  filepath = FILEPATH + "/client_dataset/" + "dataset.txt"
+  file = open(filepath, "r")
+  for line in file:
+    if line != "\n":
+        line_count += 1
+  file.close()
+  return line_count
+
+"""
 save_board():
   save the board position in a file
   Example: position saved as a string: rnbqkbnr/ppp1pppp/8/3p4/3PP3/8/PPP2PPP/RNBQKBNR b KQkq d3 0 2

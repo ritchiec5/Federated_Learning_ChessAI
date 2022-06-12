@@ -36,7 +36,8 @@ send_client_weights()
 """
 def send_client_weights():
     file = open(FILEPATH + "\\model_data\\client_weights", "rb")
-    params = {'client': '1', 'datasize': '100'}
+    datasize = dataset_size()
+    params = {'client': '1', 'datasize': str(datasize)}
     res = requests.post(
         'http://localhost:5000/server/receive_client_weights', file, params=params)
     print('Response from server: ', res.text)
