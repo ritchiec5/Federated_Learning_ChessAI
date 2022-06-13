@@ -15,22 +15,49 @@ parameters:
 return:
   str(max_move): string of the best move
 """
+# def get_move_from_ai(board, depth, model):
+#   min_move = None
+#   min_eval = numpy.inf
+
+#   # Move based on the legal move and evaluate
+#   # Keeps the best evaluation
+#   for move in board.legal_moves:
+#     board.push(move)
+#     eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
+#     board.pop()
+#     if eval < min_eval:
+#       min_eval = eval
+#       min_move = move
+
+#   return str(min_move)
+
+
 def get_move_from_ai(board, depth, model):
-  min_move = None
-  min_eval = numpy.inf
+    best_move = None
+    alpha = numpy.inf
+    stop = False
+    for move in board.legal_moves:
+        max_eval = -numpy.inf
+        board.push(move)
 
-  # Move based on the legal move and evaluate
-  # Keeps the best evaluation
-  for move in board.legal_moves:
-    board.push(move)
-    eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
-    board.pop()
-    if eval < min_eval:
-      min_eval = eval
-      min_move = move
+        for move1 in board.legal_moves:
+            if stop:
+                pass
+            else:
+                board.push(move1)
+                eval = minimax_eval(board, model)
+                board.pop()
+                if(eval > alpha):
+                    stop = True
+                max_eval = max(max_eval, eval)  # Best move for White
 
-  return str(min_move)
-
+        if stop == False:
+            alpha = max_eval
+            best_move = move
+        else:
+            stop = False
+        board.pop()
+    return str(best_move)
 
 """
 minimax():
@@ -43,33 +70,38 @@ Parameter:
   beta: determine the maximum evaluation
   maximizing_player: find the best move that optimizes the player
   model: tensorflow model
-"""
-def minimax(board, depth, alpha, beta, maximizing_player, model):
-  if depth == 0 or board.is_game_over():
-    return minimax_eval(board, model)
 
-  if maximizing_player:
-    max_eval = -numpy.inf
-    for move in board.legal_moves:
-      board.push(move)
-      eval = minimax(board, depth - 1, alpha, beta, False, model)
-      board.pop()
-      max_eval = max(max_eval, eval)
-      alpha = max(alpha, eval)
-      if beta <= alpha:
-        break
-    return max_eval
-  else:
-    min_eval = numpy.inf
-    for move in board.legal_moves:
-      board.push(move)
-      eval = minimax(board, depth - 1, alpha, beta, True, model)
-      board.pop()
-      min_eval = min(min_eval, eval)
-      beta = min(beta, eval)
-      if beta <= alpha:
-        break
-    return min_eval
+return:
+  min_eval: float score of the board
+
+"""
+# def minimax(board, depth, alpha, beta, maximizing_player, model):
+#   if depth == 0 or board.is_game_over():
+#     return minimax_eval(board, model)
+
+#   if maximizing_player:
+#     max_eval = -numpy.inf
+#     for move in board.legal_moves:
+#       board.push(move)
+#       eval = minimax(board, depth - 1, alpha, beta, False, model)
+#       board.pop()
+#       max_eval = max(max_eval, eval)
+#       alpha = max(alpha, eval)
+#       if beta <= alpha:
+#         break
+#     return max_eval
+#   else:
+#     min_eval = numpy.inf
+#     for move in board.legal_moves:
+#       board.push(move)
+#       eval = minimax(board, depth - 1, alpha, beta, True, model)
+#       board.pop()
+#       min_eval = min(min_eval, eval)
+#       beta = min(beta, eval)
+#       if beta <= alpha:
+#         break
+#     return min_eval
+
 
 """
 minimax_eval():

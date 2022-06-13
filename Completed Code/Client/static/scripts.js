@@ -48,7 +48,7 @@ var updateStatus = function() {
     moveColor = 'Black';
   }
 
-  if (game_over === true){
+  if (game.in_checkmate() || game.in_draw() && game_over === true){
     gameover();
     game_over = false;
   }

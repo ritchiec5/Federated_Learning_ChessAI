@@ -109,6 +109,7 @@ return:
 """
 @app.route('/gameover/', methods=['POST'])
 def game_over():
+    print("game_over")
     model_training_thread = threading.Thread(target=training_thread)
     model_training_thread.start()
     return "Gameover"
