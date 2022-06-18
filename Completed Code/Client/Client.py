@@ -134,4 +134,4 @@ def receive_global_weights():
         return jsonify("Received updated server weights")
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=False)
+    app.run(port='0', debug=False)
