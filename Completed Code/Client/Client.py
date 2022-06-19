@@ -37,7 +37,8 @@ send_client_weights()
 def send_client_weights():
     file = open(FILEPATH + "\\model_data\\client_weights", "rb")
     datasize = dataset_size()
-    params = {'client': '1', 'datasize': str(datasize)}
+    params = {'client': '1', 'datasize': str(datasize), 'port_number': port_number}
+    
     res = requests.post(
         'http://localhost:5000/server/receive_client_weights', file, params=params)
     print('Response from server: ', res.text)
@@ -109,6 +110,8 @@ return:
 """
 @app.route('/gameover/', methods=['POST'])
 def game_over():
+    global port_number
+    port_number = request.host
     print("game_over")
     model_training_thread = threading.Thread(target=training_thread)
     model_training_thread.start()
@@ -134,4 +137,4 @@ def receive_global_weights():
         return jsonify("Received updated server weights")
 
 if __name__ == '__main__':
-    app.run(port='0', debug=False)
+    app.run(port='0', debug=True)
