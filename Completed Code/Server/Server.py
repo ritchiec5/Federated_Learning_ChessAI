@@ -38,6 +38,8 @@ def receive_client_weights():
     
     if request.method == 'POST': 
         # Save weights into a file
+        global client_port 
+        client_port = request.args.get('port_number')
         client_id = request.args.get("client")
         client_dataset_size = request.args.get("datasize")
         filename = FILEPATH + "\\model_data\\client_weight{}".format(client_id)
@@ -138,8 +140,8 @@ send_client_updated_weights()
 def send_client_updated_weights():
     print("Sending updated global weights")
     file = open(FILEPATH + "\\model_data\\Updated_global_weights", "rb")
-    res = requests.post(
-        'http://localhost:5001/client/receive_global_weights', file)
+    res = requests.post( 
+        'http://{}/client/receive_global_weights'.format(str(client_port)), file)
     print(res.text)
 
 if __name__ == '__main__':
