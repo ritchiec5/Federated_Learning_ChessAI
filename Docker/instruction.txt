@@ -3,7 +3,7 @@ The building of image should be run in this directory, so cd into Federated_Lear
 --no-cahce means a fresh build
 
 To build the server and run the container:
-docker build --no-cache -t chessai_container -f Docker/Server/Dockerfile .
+docker build --no-cache -t chessai_server_container -f Docker/Server/Dockerfile .
 docker build -t chessai_server_container -f Docker/Server/Dockerfile .
 docker run -d -p 5000:5000 chessai_server_container
 
