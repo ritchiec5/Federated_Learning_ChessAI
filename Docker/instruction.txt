@@ -1,0 +1,17 @@
+The building of image should be run in this directory, so cd into Federated_Learning_ChessAI folder.
+
+--no-cahce means a fresh build
+
+To build the server and run the container:
+docker build --no-cache -t chessai_container -f Docker/Server/Dockerfile .
+docker build -t chessai_server_container -f Docker/Server/Dockerfile .
+docker run -d -p 5000:5000 chessai_server_container
+
+To build the client and run the container
+docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
+docker build -t chessai_container -f Docker/Client/Dockerfile .
+docker run -d -p 5001:5001 chessai_container
+
+To run commands on the container, e.g. to view the file structure using ls etc
+docker exec -t -i container_name /bin/bash  
+
