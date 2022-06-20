@@ -7,3 +7,4 @@ python_chess==0.31.3
 requests==2.25.1
 scikit_learn==1.1.1
 tensorflow==2.6.0
+keras==2.6
