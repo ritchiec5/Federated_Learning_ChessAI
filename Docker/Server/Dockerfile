@@ -14,5 +14,5 @@ ADD ["../../Completed Code/Server", "Completed Code/Server"]
 EXPOSE 5000
 
 # run the application
-CMD ["python", "Completed Code/Server/Server.py"]
+CMD ["python", "-u", "Completed Code/Server/Server.py"]
 
