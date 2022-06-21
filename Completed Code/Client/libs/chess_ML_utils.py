@@ -96,7 +96,7 @@ def client_model_training(x_train, y_train):
 
     print("Initiated Model training\n")
     chess_model = tensorflow.keras.models.load_model(
-        FILEPATH + "\\model_data\\global_model")
+        FILEPATH + "/model_data/global_model")
     chess_model.fit(x_train, y_train,
                     batch_size=2048,
                     epochs=5,
@@ -105,7 +105,7 @@ def client_model_training(x_train, y_train):
                     callbacks=[callbacks.ReduceLROnPlateau(monitor='loss', patience=10),
                                callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4)])
     chess_model.save_weights(
-        FILEPATH + "\\model_data\\client_weights", save_format="h5")
+        FILEPATH + "/model_data/client_weights", save_format="h5")
     print("Completed Model training\n")
 
 
@@ -122,8 +122,9 @@ return:
 """
 
 def stockfish(board, depth):
+  
   filepath = FILEPATH + \
-      "\\libs\\stockfish_15_win_x64_avx2\\stockfish_15_win_x64_avx2\\stockfish_15_x64_avx2.exe"
+      "/libs/stockfish_15_win_x64_avx2/stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe"
   with chess.engine.SimpleEngine.popen_uci(filepath) as sf:
     result = sf.analyse(board, chess.engine.Limit(depth=depth))
     score = result['score'].white().score()

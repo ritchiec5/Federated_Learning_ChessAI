@@ -19,23 +19,23 @@ request_global_model()
 def request_global_model():
     global model
     print('Requesting Global Model from Server\n')
-    res = requests.get('http://localhost:5000/server/send_global_weights',
+    res = requests.get('http://172.17.0.2:5000/server/send_global_weights',
                        json="Requesting Global model Data")
     print('Received Global Model from Server\n')
-    with open(FILEPATH + "\\model_data\\global_model", "wb") as f:
+    with open(FILEPATH + "/model_data/global_model", "wb") as f:
         f.write(res.content)
     f.close()
     print('Global Model saved')
 
     # Initialize tensorflow model
-    model = tensorflow.keras.models.load_model(FILEPATH + "\\model_data\\global_model")
+    model = tensorflow.keras.models.load_model(FILEPATH + "/model_data/global_model")
 
 """
 send_client_weights()
     Send client weights to the server 
 """
 def send_client_weights():
-    file = open(FILEPATH + "\\model_data\\client_weights", "rb")
+    file = open(FILEPATH + "/model_data/client_weights", "rb")
     datasize = dataset_size()
     params = {'datasize': str(datasize), 'port_number': port_number}
     
@@ -130,11 +130,11 @@ return:
 def receive_global_weights():
     print("Received updated Global weights")
     if request.method == 'POST':
-        filename = FILEPATH + "\\model_data\\updated_global_weights"
+        filename = FILEPATH + "/model_data/updated_global_weights"
         with open(filename, "wb") as f:
             f.write(request.data)
         f.close()
         return jsonify("Received updated server weights")
 
 if __name__ == '__main__':
-    app.run(port='0', debug=False)
+    app.run(port=5001, debug=False, host='0.0.0.0')

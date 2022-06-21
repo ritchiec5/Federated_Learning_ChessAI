@@ -7,14 +7,14 @@ import numpy
 import tensorflow
 app = Flask(__name__)
 
-FILEPATH = os.path.abspath("Completed Code\Server")
+FILEPATH = os.path.abspath("Completed Code/Server")
 
 # Global Variable for Model Aggregation
 client_weights_filepath_list = []   # Contains Array of Client Weights filepath
 global_dataset_size = 0             # Contains Sum of client dataset size
 client_dataset_size_list = []       # Contains Array of client dataset size
 client_port = []                    # Contains Array of client ports
-lock = False                         # Lock the client at critical section
+lock = False                        # Lock the client at critical section
 
 """
 send_global_weights():
@@ -24,7 +24,7 @@ send_global_weights():
 def send_global_weights():
     if request.method == 'GET':  # Client has just initialzed and is requesting model data
         print("Sending Global Weights")
-        filepath = FILEPATH + "\\model_data\\global_model.h5"
+        filepath = FILEPATH + "/model_data/global_model.h5"
         print(filepath)
         return send_file(filepath)
 
@@ -45,7 +45,7 @@ def receive_client_weights():
         port = request.args.get("port_number")
         client_port.append(port)
         client_dataset_size = request.args.get("datasize")
-        filename = FILEPATH + "\\model_data\\client_weight{}".format(port)
+        filename = FILEPATH + "/model_data/client_weight{}".format(port)
         with open(filename, "wb") as f:
             f.write(request.data)
         f.close()
@@ -70,7 +70,7 @@ def aggregation():
     # Model initialization
     if not lock:
         lock = True
-        model = tensorflow.keras.models.load_model(FILEPATH + "\\model_data\\global_model.h5")
+        model = tensorflow.keras.models.load_model(FILEPATH + "/model_data/global_model.h5")
 
         # Model Aggregation
         print("Aggregating client weights")
@@ -143,7 +143,7 @@ def sum_scaled_weights(scaled_client_weights, model):
         global_weight = numpy.add(global_weight, client_weight)
     model.set_weights(global_weight)
     model.save_weights(
-        FILEPATH + "\\model_data\\Updated_global_weights", save_format="h5")
+        FILEPATH + "/model_data/Updated_global_weights", save_format="h5")
 
 """
 send_client_updated_weights()
@@ -151,7 +151,7 @@ send_client_updated_weights()
 """
 def send_client_updated_weights():
     print("Sending updated global weights")
-    file = open(FILEPATH + "\\model_data\\Updated_global_weights", "rb")
+    file = open(FILEPATH + "/model_data/Updated_global_weights", "rb")
     
     for port in client_port:
         try:
@@ -163,4 +163,4 @@ def send_client_updated_weights():
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=False)
+    app.run(port=5000, debug=False, host='0.0.0.0')
