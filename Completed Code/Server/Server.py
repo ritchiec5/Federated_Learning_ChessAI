@@ -1,5 +1,6 @@
 import os
 import threading
+from time import sleep
 from flask import Flask, request, jsonify, send_file
 import requests
 import numpy
@@ -12,6 +13,8 @@ FILEPATH = os.path.abspath("Completed Code\Server")
 client_weights_filepath_list = []   # Contains Array of Client Weights filepath
 global_dataset_size = 0             # Contains Sum of client dataset size
 client_dataset_size_list = []       # Contains Array of client dataset size
+client_port = []                    # Contains Array of client ports
+lock = False                         # Lock the client at critical section
 
 """
 send_global_weights():
@@ -39,10 +42,10 @@ def receive_client_weights():
     if request.method == 'POST': 
         # Save weights into a file
         global client_port 
-        client_port = request.args.get('port_number')
-        client_id = request.args.get("client")
+        port = request.args.get("port_number")
+        client_port.append(port)
         client_dataset_size = request.args.get("datasize")
-        filename = FILEPATH + "\\model_data\\client_weight{}".format(client_id)
+        filename = FILEPATH + "\\model_data\\client_weight{}".format(port)
         with open(filename, "wb") as f:
             f.write(request.data)
         f.close()
@@ -63,18 +66,27 @@ aggregation():
     2. sends client updated weights 
 """
 def aggregation():
+    global lock
     # Model initialization
-    model = tensorflow.keras.models.load_model(FILEPATH + "\\model_data\\global_model.h5")
+    if not lock:
+        lock = True
+        model = tensorflow.keras.models.load_model(FILEPATH + "\\model_data\\global_model.h5")
 
-    # Model Aggregation
-    print("Aggregating client weights")
-    weight_scaling_factor_list = weight_scaling_factor() # Find client dataset contribution scale of 0 to 1
-    scaled_client_weights = scale_model_weight(weight_scaling_factor_list, model) # Scale client model weight by client dataset contribution scale
-    sum_scaled_weights(scaled_client_weights, model) # Sum scaled client model weights
-    
-    print("Model Aggregated")
-    # Send clients updated weights
-    send_client_updated_weights()
+        # Model Aggregation
+        print("Aggregating client weights")
+        weight_scaling_factor_list = weight_scaling_factor() # Find client dataset contribution scale of 0 to 1
+        scaled_client_weights = scale_model_weight(weight_scaling_factor_list, model) # Scale client model weight by client dataset contribution scale
+        sum_scaled_weights(scaled_client_weights, model) # Sum scaled client model weights
+        
+        print("Model Aggregated")
+        # Send clients updated weights
+        send_client_updated_weights()
+        lock = False
+    else:
+        while lock:
+            sleep(10)
+        else:
+            aggregation()
 
 """
 weight_scaling_factor():
@@ -140,9 +152,15 @@ send_client_updated_weights()
 def send_client_updated_weights():
     print("Sending updated global weights")
     file = open(FILEPATH + "\\model_data\\Updated_global_weights", "rb")
-    res = requests.post( 
-        'http://{}/client/receive_global_weights'.format(str(client_port)), file)
-    print(res.text)
+    
+    for port in client_port:
+        try:
+            res = requests.post( 
+                'http://{}/client/receive_global_weights'.format(str(port)), file)
+            print(res.text)
+        except:
+            print("Client {} is down".format(str(port)))
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=False)

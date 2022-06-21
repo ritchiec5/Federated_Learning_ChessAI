@@ -93,11 +93,6 @@ client_model_training()
 """
 def client_model_training(x_train, y_train):
     x_train.transpose()
-    checkpoint_filepath = '/tmp/checkpoint/'
-    model_checkpointing_callback = ModelCheckpoint(
-        filepath=checkpoint_filepath,
-        save_best_only=True,
-    )
 
     print("Initiated Model training\n")
     chess_model = tensorflow.keras.models.load_model(
@@ -108,7 +103,7 @@ def client_model_training(x_train, y_train):
                     verbose=1,
                     validation_split=0.1,
                     callbacks=[callbacks.ReduceLROnPlateau(monitor='loss', patience=10),
-                               callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4), model_checkpointing_callback])
+                               callbacks.EarlyStopping(monitor='loss', patience=15, min_delta=1e-4)])
     chess_model.save_weights(
         FILEPATH + "\\model_data\\client_weights", save_format="h5")
     print("Completed Model training\n")

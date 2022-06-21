@@ -48,11 +48,13 @@ var updateStatus = function() {
     moveColor = 'Black';
   }
 
-  if (game.in_checkmate() || game.in_draw() && game_over === true){
-    gameover();
-    game_over = false;
+  if (game_over){
+    if (game.in_checkmate() || game.in_draw()){
+      gameover();
+      game_over = false;
+    }
   }
-
+  
   // Check if the game is in checkmate
   if (game.in_checkmate() === true) {
     status = 'Game over, ' + moveColor + ' is in checkmate.';

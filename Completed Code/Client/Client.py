@@ -37,7 +37,7 @@ send_client_weights()
 def send_client_weights():
     file = open(FILEPATH + "\\model_data\\client_weights", "rb")
     datasize = dataset_size()
-    params = {'client': '1', 'datasize': str(datasize), 'port_number': port_number}
+    params = {'datasize': str(datasize), 'port_number': port_number}
     
     res = requests.post(
         'http://localhost:5000/server/receive_client_weights', file, params=params)
@@ -64,6 +64,8 @@ return:
 """
 @app.route('/')
 def index():
+    global port_number
+    port_number = request.host
     request_model_thread = threading.Thread(target=request_global_model)
     request_model_thread.start()
     return render_template("index.html")
@@ -110,8 +112,6 @@ return:
 """
 @app.route('/gameover/', methods=['POST'])
 def game_over():
-    global port_number
-    port_number = request.host
     print("game_over")
     model_training_thread = threading.Thread(target=training_thread)
     model_training_thread.start()
