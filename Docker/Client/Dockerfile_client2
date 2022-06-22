@@ -15,5 +15,5 @@ ADD ["../../Completed Code/Client", "Completed Code/Client"]
 EXPOSE 5001
 
 # run the application
-CMD ["python", "-u", "Completed Code/Client/Client.py"]
+CMD ["python", "-u", "Completed Code/Client/Client.py", "5002", "8080"]
 

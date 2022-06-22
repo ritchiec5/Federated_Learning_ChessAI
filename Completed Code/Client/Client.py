@@ -4,13 +4,19 @@ import threading
 from libs.chess_engine import *
 from libs.chess_ML_utils import *
 import tensorflow
+import sys
 
 import requests
 
 app = Flask(__name__)
-FILEPATH = "./Completed Code/Client"
 model = None  # Global variable to store tensorflow model
+
+FLASK_PORT = str(sys.argv[1])
+STOCKFISH_PORT = str(sys.argv[2])
+
+FILEPATH = "./Completed Code/Client"
 SERVERIP = "http://192.168.1.154:5000/"
+
 
 """ 
 request_global_model()
@@ -31,6 +37,7 @@ def request_global_model():
     try:
         model = tensorflow.keras.models.load_model(FILEPATH + "/model_data/global_model.h5")
     except:
+        print("File corrupted, Requesting Global model")
         request_global_model()
         
 """
@@ -53,7 +60,7 @@ training_thread():
     2. Send client weights to server
 """
 def training_thread():
-    x_dataset, y_dataset = create_client_dataset()
+    x_dataset, y_dataset = create_client_dataset(STOCKFISH_PORT)
     client_model_training(x_dataset, y_dataset)
     send_client_weights()
 
@@ -141,4 +148,4 @@ def receive_global_weights():
         return jsonify("Received updated server weights")
 
 if __name__ == '__main__':
-    app.run(port=5002, debug=False, host='0.0.0.0')
+    app.run(port=FLASK_PORT, debug=False, host='0.0.0.0')

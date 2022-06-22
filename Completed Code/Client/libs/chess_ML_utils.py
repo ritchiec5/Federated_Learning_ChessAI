@@ -54,7 +54,7 @@ return:
   x_dataset: Numpy array of the chess position. 4D array [number of dataset,14,8,8]
   y_dataset: Numpy array of evaluated chess position.
 """
-def create_client_dataset():
+def create_client_dataset(stockfish_port):
   x_dataset = []
   y_dataset = []
 
@@ -68,7 +68,7 @@ def create_client_dataset():
   print("Creating Dataset")  
   for chess_position in data:
     board = chess.Board(chess_position)
-    evaluation = stockfish(chess_position)
+    evaluation = stockfish(chess_position, stockfish_port)
     numpy_board = split_dims(board)
 
     if evaluation is None:
@@ -122,8 +122,9 @@ return:
   score: provide a evaluation number of the position
 """
 
-def stockfish(board):
-  tn = Telnet('192.168.1.154', port=8080)  # Connect to the engine
+
+def stockfish(board, stockfish_port):
+  tn = Telnet('192.168.1.154', port=stockfish_port)  # Connect to the engine
   position = "position fen " + board
   tn.write(position.encode('ascii') + b"\n")
   tn.write("eval".encode('ascii') + b"\n")

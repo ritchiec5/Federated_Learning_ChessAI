@@ -9,13 +9,13 @@ docker run -d -p 5000:5000 chessai_server_container
 
 To build the client and run the container
 docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
-docker build -t chessai_container -f Docker/Client/Dockerfile .
-docker run -d -p 5001:5001 chessai_container
+docker build -t chessai_container -f Docker/Client/Dockerfile_client1 .
+docker run -d -p 5001:5001 -p 8080:8080 chessai_container
 
 To build the client 2 and run the container
 docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
-docker build -t chessai_container1 -f Docker/Client/Dockerfile .
-docker run -d -p 5002:5002 chessai_container1
+docker build -t chessai_container1 -f Docker/Client/Dockerfile_client2 .
+docker run -d -p 5002:5002 -p 8081:8081 chessai_container1
 
 docker build --no-cache -t stockfish -f Docker/Stockfish/Dockerfile .
 docker build -t stockfish -f Docker/Stockfish/Dockerfile .
@@ -26,6 +26,9 @@ docker exec -t -i container_name /bin/bash
 
 # See all docker logs
 docker logs containername
+docker logs -f containername # Stream container
+
 
 # Kill at container
 docker kill $(docker ps -q)
+docker rmi -f $(docker images -a -q)
