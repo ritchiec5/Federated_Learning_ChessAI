@@ -12,6 +12,20 @@ docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
 docker build -t chessai_container -f Docker/Client/Dockerfile .
 docker run -d -p 5001:5001 chessai_container
 
+To build the client 2 and run the container
+docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
+docker build -t chessai_container1 -f Docker/Client/Dockerfile .
+docker run -d -p 5002:5002 chessai_container1
+
+docker build --no-cache -t stockfish -f Docker/Stockfish/Dockerfile .
+docker build -t stockfish -f Docker/Stockfish/Dockerfile .
+docker run -d -p 8080:8080 stockfish
+
 To run commands on the container, e.g. to view the file structure using ls etc
 docker exec -t -i container_name /bin/bash  
 
+# See all docker logs
+docker logs containername
+
+# Kill at container
+docker kill $(docker ps -q)

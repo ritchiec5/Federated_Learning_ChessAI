@@ -11,8 +11,8 @@ import chess.engine
 import numpy
 import os
 import tensorflow
-from tensorflow.keras.callbacks import ModelCheckpoint
 import tensorflow.keras.callbacks as callbacks
+from telnetlib import Telnet
 
 FILEPATH = os.path.abspath("Completed Code/Client")
 
@@ -65,10 +65,10 @@ def create_client_dataset():
   data = data.splitlines()
 
   # Loop through dataset and convert to [14,8,8] numpy array and append to a list
-  print("Creating Dataset")
+  print("Creating Dataset")  
   for chess_position in data:
     board = chess.Board(chess_position)
-    evaluation = stockfish(board, 1)
+    evaluation = stockfish(chess_position)
     numpy_board = split_dims(board)
 
     if evaluation is None:
@@ -76,6 +76,7 @@ def create_client_dataset():
     else:
       x_dataset.append(numpy_board)
       y_dataset.append(evaluation)
+
 
   # Convert to list of numpy array to numpy array
   x_dataset = numpy.asarray(x_dataset)
@@ -121,14 +122,21 @@ return:
   score: provide a evaluation number of the position
 """
 
-def stockfish(board, depth):
-  
-  filepath = FILEPATH + \
-      "/libs/stockfish_15_win_x64_avx2/stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe"
-  with chess.engine.SimpleEngine.popen_uci(filepath) as sf:
-    result = sf.analyse(board, chess.engine.Limit(depth=depth))
-    score = result['score'].white().score()
-    return score
+def stockfish(board):
+  tn = Telnet('192.168.1.154', port=8080)  # Connect to the engine
+  position = "position fen " + board
+  tn.write(position.encode('ascii') + b"\n")
+  tn.write("eval".encode('ascii') + b"\n")
+  tn.write("quit".encode('ascii') + b"\n")  # Quit from the engine
+  lines = tn.read_all().decode('ascii')
+  lines = lines.splitlines()
+
+  for line in lines:
+      if "Total evaluation" in line:          
+          line = line.replace("Total evaluation: ","")
+          line = line.replace(" (white side)", "")
+          eval = float(line)
+  return eval
 
 """
 split_dims(board):
@@ -190,7 +198,6 @@ square_to_index():
 """
 # example: h3 -> 17
 
- 
 def square_to_index(square):
   letter = chess.square_name(square)
   return 8 - int(letter[1]), squares_index[letter[0]]

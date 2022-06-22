@@ -8,6 +8,7 @@ import tensorflow
 app = Flask(__name__)
 
 FILEPATH = os.path.abspath("Completed Code/Server")
+IP = "192.168.1.154:"
 
 # Global Variable for Model Aggregation
 client_weights_filepath_list = []   # Contains Array of Client Weights filepath
@@ -15,6 +16,7 @@ global_dataset_size = 0             # Contains Sum of client dataset size
 client_dataset_size_list = []       # Contains Array of client dataset size
 client_port = []                    # Contains Array of client ports
 lock = False                        # Lock the client at critical section
+global_weight_lock = False          # global weight lock
 
 """
 send_global_weights():
@@ -22,11 +24,18 @@ send_global_weights():
 """
 @app.route('/server/send_global_weights', methods=['GET'])
 def send_global_weights():
-    if request.method == 'GET':  # Client has just initialzed and is requesting model data
-        print("Sending Global Weights")
-        filepath = FILEPATH + "/model_data/global_model.h5"
-        print(filepath)
-        return send_file(filepath)
+    global global_weight_lock
+    while global_weight_lock:
+        sleep(2)
+    else:         
+        global_weight_lock = True
+        if request.method == 'GET':  # Client has just initialzed and is requesting model data
+            print("Sending Global Weights")
+            filepath = FILEPATH + "/model_data/global_model.h5"
+            try:
+                return send_file(filepath)
+            finally:
+                global_weight_lock = False
 
 """
 receive_client_weights():
@@ -154,6 +163,7 @@ def send_client_updated_weights():
     file = open(FILEPATH + "/model_data/Updated_global_weights", "rb")
     
     for port in client_port:
+        port = IP + port.split(":",1)[1]
         try:
             res = requests.post( 
                 'http://{}/client/receive_global_weights'.format(str(port)), file)

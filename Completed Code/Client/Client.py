@@ -8,9 +8,9 @@ import tensorflow
 import requests
 
 app = Flask(__name__)
-FILEPATH = os.path.abspath("Completed Code/Client")
+FILEPATH = "./Completed Code/Client"
 model = None  # Global variable to store tensorflow model
-
+SERVERIP = "http://192.168.1.154:5000/"
 
 """ 
 request_global_model()
@@ -19,17 +19,20 @@ request_global_model()
 def request_global_model():
     global model
     print('Requesting Global Model from Server\n')
-    res = requests.get('http://172.17.0.2:5000/server/send_global_weights',
+    res = requests.get(SERVERIP + 'server/send_global_weights',
                        json="Requesting Global model Data")
     print('Received Global Model from Server\n')
-    with open(FILEPATH + "/model_data/global_model", "wb") as f:
+    with open(FILEPATH + "/model_data/global_model.h5", "wb") as f:
         f.write(res.content)
     f.close()
     print('Global Model saved')
 
     # Initialize tensorflow model
-    model = tensorflow.keras.models.load_model(FILEPATH + "/model_data/global_model")
-
+    try:
+        model = tensorflow.keras.models.load_model(FILEPATH + "/model_data/global_model.h5")
+    except:
+        request_global_model()
+        
 """
 send_client_weights()
     Send client weights to the server 
@@ -40,7 +43,7 @@ def send_client_weights():
     params = {'datasize': str(datasize), 'port_number': port_number}
     
     res = requests.post(
-        'http://localhost:5000/server/receive_client_weights', file, params=params)
+        SERVERIP + '/server/receive_client_weights', file, params=params)
     print('Response from server: ', res.text)
 
 """
@@ -89,7 +92,8 @@ def get_move(depth, fen):
 
     while (model is None):
         print("Model has not been initialized")
-        sleep(2)
+        sleep(5)
+        request_global_model()
     
     # Save the chessboard position for model training
     save_board(fen)
@@ -137,4 +141,4 @@ def receive_global_weights():
         return jsonify("Received updated server weights")
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=False, host='0.0.0.0')
+    app.run(port=5002, debug=False, host='0.0.0.0')
