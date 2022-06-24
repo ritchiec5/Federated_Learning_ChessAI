@@ -1,8 +1,6 @@
-# damon/chess-engine
-#
-# v 0.1
-
 FROM debian:jessie
+
+ENV STOCKFISHPORT 8080
 
 # Install tcputils in order to use mini-inetd
 RUN apt-get update && \
@@ -27,4 +25,5 @@ RUN mkdir /tmp/stockfish && \
 # Expose the mini-inetd port
 EXPOSE 8080
 
-CMD ["/usr/bin/mini-inetd", "-d", "8080", "/usr/local/bin/stockfish", "go"]
+CMD /usr/bin/mini-inetd -d $STOCKFISHPORT /usr/local/bin/stockfish go
+# CMD ["/usr/bin/mini-inetd", "-d", "8080", "/usr/local/bin/stockfish", "go"]

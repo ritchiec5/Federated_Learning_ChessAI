@@ -1,6 +1,9 @@
 # our base image
 FROM python:3.9-slim
- 
+
+ENV FLASKPORT 5001
+ENV STOCKFISHPORT 8080
+
 # install Python modules needed by the Python app
 COPY ../../requirements.txt .
 
@@ -15,5 +18,6 @@ ADD ["../../Completed Code/Client", "Completed Code/Client"]
 EXPOSE 5001
 
 # run the application
-CMD ["python", "-u", "Completed Code/Client/Client.py", "5001", "8080"]
+CMD python -u "Completed Code/Client/Client.py" $FLASKPORT $STOCKFISHPORT
+# CMD ["python", "-u", "Completed Code/Client/Client.py", "5001", "8080"]
 

@@ -10,12 +10,8 @@ docker run -d -p 5000:5000 chessai_server_container
 To build the client and run the container
 docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
 docker build -t chessai_container -f Docker/Client/Dockerfile_client1 .
-docker run -d -p 5001:5001 -p 8080:8080 chessai_container
+docker run -e FLASKPORT='5001' -e STOCKFISHPORT='5001' -d -p 5001:5001 -p 8080:8080 chessai_container
 
-To build the client 2 and run the container
-docker build --no-cache -t chessai_container -f Docker/Client/Dockerfile .
-docker build -t chessai_container1 -f Docker/Client/Dockerfile_client2 .
-docker run -d -p 5002:5002 -p 8081:8081 chessai_container1
 
 docker build --no-cache -t stockfish -f Docker/Stockfish/Dockerfile .
 docker build -t stockfish -f Docker/Stockfish/Dockerfile .
