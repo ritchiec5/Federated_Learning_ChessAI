@@ -1,0 +1,10 @@
+chess==1.9.1
+Flask==2.0.1
+imutils==0.5.4
+numpy==1.19.5
+opencv_python==4.5.3.56
+python_chess==0.31.3
+requests==2.25.1
+scikit_learn==1.1.1
+tensorflow==2.6.0
+keras==2.6

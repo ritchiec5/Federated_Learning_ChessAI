@@ -32,3 +32,6 @@ docker logs -f containername # Stream container
 # Kill at container
 docker kill $(docker ps -q)
 docker rmi -f $(docker images -a -q)
+
+# docker-compose
+docker-compose up --build

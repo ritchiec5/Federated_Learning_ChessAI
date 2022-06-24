@@ -7,7 +7,8 @@ import numpy
 import tensorflow
 app = Flask(__name__)
 
-FILEPATH = os.path.abspath("Completed Code/Server")
+# FILEPATH = os.path.abspath("Completed Code/Server")
+FILEPATH = ""
 IP = "192.168.1.154:"
 
 # Global Variable for Model Aggregation

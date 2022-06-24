@@ -14,7 +14,8 @@ model = None  # Global variable to store tensorflow model
 FLASK_PORT = str(sys.argv[1])
 STOCKFISH_PORT = str(sys.argv[2])
 
-FILEPATH = "./Completed Code/Client"
+# FILEPATH = "./Completed Code/Client"
+FILEPATH = ""
 SERVERIP = "http://192.168.1.154:5000/"
 
 

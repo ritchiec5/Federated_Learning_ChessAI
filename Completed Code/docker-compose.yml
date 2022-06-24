@@ -1,0 +1,25 @@
+version: '3'
+services:
+
+    server:
+        build:
+          dockerfile: Dockerfile_server
+          context: ./Server
+        ports:
+          - '5000:5000'
+
+    client:
+        build: 
+          dockerfile: Dockerfile_client1
+          context: ./Client 
+        ports: 
+          - '5001:5001'
+    
+    stockfish:
+        build: 
+          dockerfile: Dockerfile
+          context: ./Stockfish
+        ports: 
+          - '8080:8080'
+
+

@@ -14,7 +14,8 @@ import tensorflow
 import tensorflow.keras.callbacks as callbacks
 from telnetlib import Telnet
 
-FILEPATH = os.path.abspath("Completed Code/Client")
+# FILEPATH = os.path.abspath("Completed Code/Client")
+FILEPATH = ""
 
 """
 dataset_size():
