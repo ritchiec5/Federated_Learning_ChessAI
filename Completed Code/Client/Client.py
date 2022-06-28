@@ -109,7 +109,7 @@ def get_move(depth, fen):
     # Calculate best chess move with the tensorflow model
     print("Calculating...")
     board  = chess.Board(fen)
-    depth = 1 # Currently depth of more than 1, exponentially increase the computing time. Will have to dig deeper into minmax algo.
+    # Currently depth of more than 2, exponentially increase the computing time.
     move = get_move_from_ai(board, depth, model)
     print("Move found!", move)
     return move

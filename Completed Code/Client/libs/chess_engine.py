@@ -15,49 +15,39 @@ parameters:
 return:
   str(max_move): string of the best move
 """
-# def get_move_from_ai(board, depth, model):
-#   min_move = None
-#   min_eval = numpy.inf
-
-#   # Move based on the legal move and evaluate
-#   # Keeps the best evaluation
-#   for move in board.legal_moves:
-#     board.push(move)
-#     eval = minimax(board, depth - 1, -numpy.inf, numpy.inf, False, model)
-#     board.pop()
-#     if eval < min_eval:
-#       min_eval = eval
-#       min_move = move
-
-#   return str(min_move)
-
-
+best_move = None
 def get_move_from_ai(board, depth, model):
-    best_move = None
-    alpha = numpy.inf
-    stop = False
-    for move in board.legal_moves:
-        max_eval = -numpy.inf
-        board.push(move)
+  global best_moves
+  eval = minimax(board, depth, -numpy.inf, numpy.inf, False, model, depth)
+  return str(best_move)
 
-        for move1 in board.legal_moves:
-            if stop:
-                pass
-            else:
-                board.push(move1)
-                eval = minimax_eval(board, model)
-                board.pop()
-                if(eval > alpha):
-                    stop = True
-                max_eval = max(max_eval, eval)  # Best move for White
 
-        if stop == False:
-            alpha = max_eval
-            best_move = move
-        else:
-            stop = False
-        board.pop()
-    return str(best_move)
+# def get_move_from_ai(board, depth, model):
+#     best_move = None
+#     alpha = numpy.inf
+#     stop = False
+#     for move in board.legal_moves:
+#         max_eval = -numpy.inf
+#         board.push(move)
+
+#         for move1 in board.legal_moves:
+#             if stop:
+#                 pass
+#             else:
+#                 board.push(move1)
+#                 eval = minimax_eval(board, model)
+#                 board.pop()
+#                 if(eval > alpha):
+#                     stop = True
+#                 max_eval = max(max_eval, eval)  # Best move for White
+
+#         if stop == False:
+#             alpha = max_eval
+#             best_move = move
+#         else:
+#             stop = False
+#         board.pop()
+#     return str(best_move)
 
 """
 minimax():
@@ -75,32 +65,57 @@ return:
   min_eval: float score of the board
 
 """
-# def minimax(board, depth, alpha, beta, maximizing_player, model):
-#   if depth == 0 or board.is_game_over():
-#     return minimax_eval(board, model)
+def minimax(board, depth, alpha, beta, maximizingPlayer, model, original_depth):
+  global best_move
+  if depth == 0 or board.is_game_over():
+    return minimax_eval(board, model)
 
-#   if maximizing_player:
-#     max_eval = -numpy.inf
-#     for move in board.legal_moves:
-#       board.push(move)
-#       eval = minimax(board, depth - 1, alpha, beta, False, model)
-#       board.pop()
-#       max_eval = max(max_eval, eval)
-#       alpha = max(alpha, eval)
-#       if beta <= alpha:
-#         break
-#     return max_eval
-#   else:
-#     min_eval = numpy.inf
-#     for move in board.legal_moves:
-#       board.push(move)
-#       eval = minimax(board, depth - 1, alpha, beta, True, model)
-#       board.pop()
-#       min_eval = min(min_eval, eval)
-#       beta = min(beta, eval)
-#       if beta <= alpha:
-#         break
-#     return min_eval
+  if maximizingPlayer:
+    value = -numpy.inf
+    for move in board.legal_moves:
+      board.push(move)
+
+      if depth == original_depth:
+        temp_value = value
+        value = max(value, minimax(board, depth - 1, alpha,
+                    beta, False, model, original_depth))
+        if value != temp_value:
+          best_move = move
+      else:
+        value = max(value, minimax(board, depth - 1, alpha,
+                    beta, False, model, original_depth))
+
+      board.pop()
+      if value >= beta:
+        break
+      alpha = max(alpha, value)
+    return value
+
+  else:
+    value = numpy.inf
+    for move in board.legal_moves:
+      board.push(move)
+
+      if depth == original_depth:
+        temp_value = value
+        value = min(value, minimax(board, depth - 1, alpha,
+                  beta, True, model, original_depth))
+        if value != temp_value:
+          best_move = move
+      else:
+        value = min(value, minimax(board, depth - 1, alpha,
+                  beta, True, model, original_depth))
+      board.pop()
+      if value <= alpha:
+        break
+      beta = min(beta, value)
+    return value
+
+
+def minimax_eval(board, model):
+  board3d = split_dims(board)
+  board3d = numpy.expand_dims(board3d, 0)
+  return model.predict(board3d)[0][0]
 
 
 """
