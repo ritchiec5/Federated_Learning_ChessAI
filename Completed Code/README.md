@@ -20,3 +20,8 @@ docker-compose down
 docker cp <containerId>:/file/path/within/container /host/path/target
 
 You may adjust the docker compose file to add more clients 
+
+``` console
+docker-compose up --build --remove-orphans --force-recreate
+```
+// Should there be any error

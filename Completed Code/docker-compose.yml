@@ -7,25 +7,28 @@ services:
           context: ./Server
         ports:
           - '5000:5000'
+        environment:
+            - IPADDRESS=172.30.138.120
 
     client1:
         build: 
           dockerfile: Dockerfile
           context: ./Client 
         ports: 
-          - '5001:5001'
+          - '5003:5003'
         environment:
-            - FLASKPORT=5001
-            - STOCKFISHPORT=8080
+            - FLASKPORT=5003
+            - STOCKFISHPORT=8082
+            - IPADDRESS=172.30.138.120
 
     stockfish1:
         build: 
           dockerfile: Dockerfile
           context: ./Stockfish
         ports: 
-          - '8080:8080'
+          - '8082:8082'
         environment:
-            - STOCKFISHPORT=8080        
+            - STOCKFISHPORT=8082        
 
     # Add as many client with the different port
     client2:
@@ -33,10 +36,11 @@ services:
           dockerfile: Dockerfile
           context: ./Client 
         ports: 
-          - '5002:5002'
+          - '5004:5004'
         environment:
-            - FLASKPORT=5002
-            - STOCKFISHPORT=8081
+            - FLASKPORT=5004
+            - STOCKFISHPORT=8083
+            - IPADDRESS=172.30.138.120
 
 
     stockfish2:
@@ -44,6 +48,6 @@ services:
           dockerfile: Dockerfile
           context: ./Stockfish
         ports: 
-          - '8081:8081'
+          - '8083:8083'
         environment:
-            - STOCKFISHPORT=8081  
+            - STOCKFISHPORT=8083  

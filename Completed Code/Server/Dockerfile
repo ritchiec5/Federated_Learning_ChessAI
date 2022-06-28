@@ -1,6 +1,9 @@
 # our base image
 FROM python:3.9-slim
- 
+
+# ENV Variables
+ENV IPADDRESS 192.168.1.154
+
 # install Python modules needed by the Python app
 COPY requirements.txt ./
 
@@ -12,5 +15,4 @@ COPY . .
 EXPOSE 5000
 
 # run the application
-CMD ["python", "-u", "Server.py"]
-
+CMD python -u "Server.py" $IPADDRESS

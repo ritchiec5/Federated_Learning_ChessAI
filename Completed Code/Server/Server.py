@@ -1,3 +1,4 @@
+import sys
 import os
 import threading
 from time import sleep
@@ -9,7 +10,8 @@ app = Flask(__name__)
 
 # FILEPATH = os.path.abspath("Completed Code/Server")
 FILEPATH = ""
-IP = "192.168.1.154:"
+IPADDRESS = str(sys.argv[1])
+IP = "{}:".format(IPADDRESS)
 
 # Global Variable for Model Aggregation
 client_weights_filepath_list = []   # Contains Array of Client Weights filepath

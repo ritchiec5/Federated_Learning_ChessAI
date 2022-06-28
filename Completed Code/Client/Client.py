@@ -13,10 +13,11 @@ model = None  # Global variable to store tensorflow model
 
 FLASK_PORT = str(sys.argv[1])
 STOCKFISH_PORT = str(sys.argv[2])
+IPADDRESS = str(sys.argv[3])
 
 # FILEPATH = "./Completed Code/Client"
 FILEPATH = ""
-SERVERIP = "http://192.168.1.154:5000/"
+SERVERIP = "http://{}:5000/".format(IPADDRESS)
 
 
 """ 
@@ -61,7 +62,7 @@ training_thread():
     2. Send client weights to server
 """
 def training_thread():
-    x_dataset, y_dataset = create_client_dataset(STOCKFISH_PORT)
+    x_dataset, y_dataset = create_client_dataset(IPADDRESS, STOCKFISH_PORT)
     client_model_training(x_dataset, y_dataset)
     send_client_weights()
 
