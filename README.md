@@ -2,7 +2,7 @@
 
 ## Running Application
 
-1. Open command prof and run ipconfig
+1. Open command prompt and run ipconfig
 2. Identify IPV4 address for the Wireless LAN adapter Wi-Fi. eg. 192.168.1.154
 3. Replace all docker-compose.yml IPADDRESS env variables to your IPV4 address found in the previous step
 
