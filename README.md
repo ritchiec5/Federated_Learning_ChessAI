@@ -63,9 +63,9 @@ docker-compose down
 ```
 
 ``` console
+// Should there be any error
 docker-compose up --build --remove-orphans --force-recreate
 ```
-// Should there be any error
 
 
 ### You may adjust the docker compose file to add more clients 
