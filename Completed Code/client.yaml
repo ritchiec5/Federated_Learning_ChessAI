@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  labels:
+    app: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client-container
+          image: completedcode_client1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5003
+          env:
+          - name: FLASKPORT
+            value: "5003"
+          - name: STOCKFISHPORT
+            value: "8083"
+          - name: IPADDRESS
+            # value: "localhost"
+            value: "172.17.0.13"
+
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: client-service
+# spec:
+
+#   selector:
+#     app: client
+#   ports:
+#     - protocol: TCP
+#       port: 5004
+#       targetPort: 5003
+#   type: LoadBalancer

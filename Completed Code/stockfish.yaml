@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockfish
+  labels:
+    app: stockfish
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stockfish
+  template:
+    metadata:
+      labels:
+        app: stockfish
+    spec:
+      containers:
+        - name: stockfish-container
+          image: completedcode_stockfish2
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8082
+          env:
+          - name: STOCKFISHPORT
+            value: "8082"

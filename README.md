@@ -170,3 +170,89 @@ pip install -r requirement.txt
 2. Performance.ipynb: Observing for model accuracy improvement between initial and federated
 3. AI_vs_AI.ipynb: Gameplay performance between AI and AI
 
+
+## Kubernetes
+Additionally kubernetes have been implemented
+
+Required installation
+
+Install Kubectl
+https://kubernetes.io/docs/tasks/tools/
+
+Install Minikube
+https://minikube.sigs.k8s.io/docs/start/
+
+
+bash terminal
+```console
+
+//build the docker images locally
+eval $(minikube -p minikube docker-env)
+docker compose build
+
+//start cluster
+minikube start
+
+//start network gateway from host to the service
+minikube tunnel
+
+//create kubernetes resource
+kubectl apply -f server.yaml
+
+// additional no long need to run
+kubectl apply -f client.yaml 
+kubectl apply -f client1.yaml
+kubectl apply -f stockfish.yaml
+kubectl apply -f stockfish1.yaml
+
+// creates a service exposing the port
+kubectl expose deployment server --type=LoadBalancer --port=5000
+
+//additional no longer need to run
+kubectl expose deployment client --type=LoadBalancer --port=5003
+kubectl expose deployment stockfish --type=LoadBalancer --port=8082
+kubectl expose deployment client1 --type=LoadBalancer --port=5004
+kubectl expose deployment stockfish1 --type=LoadBalancer --port=8083
+// you may access 127.0.0.1:5003 to view the flask
+
+// else you may access using 
+minikube service server
+
+// addittional no longer need to run
+minikube service client
+minikube service client1
+minikube service stockfish
+minikube service stockfish1
+
+```
+
+
+```console
+// additional commands
+kubectl get pods
+kubectl get svc
+kubectl delete pod,svc --all
+
+// commands for ingress
+minikube addons enable ingress
+kubectl get ingress
+kubectl describe ingress server-ingress
+
+// views pods dashboard
+minikube dashboard
+```
+
+1. Using cluser IP (everything is pods)
+- Currently tested by changing the client.yaml environment IP address to server ip address
+- client to server working - but server to client and client to stockfish not yet
+- to get server IP address 
+kubectl get pods -o wide
+
+
+2. Server is pod - better as it makes more sense architecturaly
+- server as pod
+- client intialize docker compose
+- client can reach server - change ip address to 127.0.0.1
+- currently load balancing can open flask, but trying to use ingress to make it an endpoint doesnt work 
+
+

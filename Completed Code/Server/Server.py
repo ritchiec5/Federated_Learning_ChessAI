@@ -55,6 +55,7 @@ def receive_client_weights():
         # Save weights into a file
         global client_port 
         port = request.args.get("port_number")
+        print(port)
         client_port.append(port)
         client_dataset_size = request.args.get("datasize")
         filename = FILEPATH + "/model_data/client_weight{}".format(port)

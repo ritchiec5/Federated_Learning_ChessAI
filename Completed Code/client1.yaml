@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client1
+  labels:
+    app: client1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client1
+  template:
+    metadata:
+      labels:
+        app: client1
+    spec:
+      containers:
+        - name: client1-container
+          image: completedcode_client2
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5004
+          env:
+          - name: FLASKPORT
+            value: "5004"
+          - name: STOCKFISHPORT
+            value: "8083"
+          - name: IPADDRESS
+            value: "127.0.0.1"
